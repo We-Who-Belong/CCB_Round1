@@ -1,3 +1,6 @@
+#define ClassAnimTable (0xc00008-0x20)
+
+#define AnimTableEntry(index) "ORG ClassAnimTable + (index * 0x20)"
 
 PUSH
   ORG $AC188
@@ -47,3 +50,43 @@ EventPointerTable(0x8c, SnowPalette)
 EventPointerTable(0x8d, SnowTileConfig)
 
 #include "BattleAnimPointers.event"
+
+TikiTransformPal:
+#incext compress "tiki_transformed_pal.dmp"
+
+TikiNormalPal:
+#incext compress "tiki_untransformed_pal.dmp"
+
+PUSH
+ORG (0xc00008-0x20)+(0xc5*0x20)+(7*4)
+POIN TikiTransformPal
+ORG (0xc00008-0x20)+(0xc6*0x20)+(7*4)
+POIN TikiTransformPal
+ORG (0xc00008-0x20)+(0xc7*0x20)+(7*4)
+POIN TikiNormalPal
+
+ORG (0xc00008-0x20)+(0xc4*0x20)+(7*4)
+POIN TikiTransformPal
+
+POP
+
+
+//Stat screen
+PUSH
+ORG $88638
+POIN NewStatScreen
+ORG $88620
+POIN RemoveGlowy
+ORG $88640
+POIN NewStatScreenPal
+POP
+
+NewStatScreen:
+#incext Png2Dmp "StatScreen_B.png" --lz77
+NewStatScreenPal:
+#incext Png2Dmp "StatScreen_B.png" --palette-only
+
+RemoveGlowy:
+#incext Png2Dmp "RemoveGlowy.png" --lz77
+
+#include "LanceVoidPromo.event"
